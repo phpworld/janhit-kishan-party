@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 28, 2026 at 02:26 PM
+-- Generation Time: Mar 01, 2026 at 03:47 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -55,6 +55,14 @@ CREATE TABLE `cms_pages` (
   `slug` varchar(255) NOT NULL,
   `content` longtext DEFAULT NULL,
   `featured_image` varchar(500) DEFAULT NULL,
+  `page_layout` varchar(30) NOT NULL DEFAULT 'site-width',
+  `sidebar_left_source` enum('default','custom') NOT NULL DEFAULT 'default',
+  `sidebar_left_content` longtext DEFAULT NULL,
+  `sidebar_right_source` enum('default','custom') NOT NULL DEFAULT 'default',
+  `sidebar_right_content` longtext DEFAULT NULL,
+  `pdf_file` varchar(500) DEFAULT NULL,
+  `pdf_label` varchar(255) DEFAULT 'View / Download PDF',
+  `pdf_display` enum('inline','download','both') NOT NULL DEFAULT 'both',
   `meta_title` varchar(255) DEFAULT NULL,
   `meta_keywords` varchar(500) DEFAULT NULL,
   `meta_description` text DEFAULT NULL,
@@ -67,8 +75,8 @@ CREATE TABLE `cms_pages` (
 -- Dumping data for table `cms_pages`
 --
 
-INSERT INTO `cms_pages` (`id`, `title`, `slug`, `content`, `featured_image`, `meta_title`, `meta_keywords`, `meta_description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Jansunwai', 'jansunwai', '<p><strong>Jan sunwai&nbsp;</strong></p>', NULL, '', '', '', 'published', '2026-02-28 12:56:28', '2026-02-28 12:56:28');
+INSERT INTO `cms_pages` (`id`, `title`, `slug`, `content`, `featured_image`, `page_layout`, `sidebar_left_source`, `sidebar_left_content`, `sidebar_right_source`, `sidebar_right_content`, `pdf_file`, `pdf_label`, `pdf_display`, `meta_title`, `meta_keywords`, `meta_description`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Jansunwai', 'jansunwai', '<p><strong>Jan sunwai&nbsp;</strong></p>', NULL, 'left-sidebar', 'default', NULL, 'default', NULL, NULL, 'View / Download PDF', 'both', '', '', '', 'published', '2026-02-28 12:56:28', '2026-03-01 02:40:26');
 
 -- --------------------------------------------------------
 
@@ -220,7 +228,9 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 (2, '2026-02-28-000002', 'App\\Database\\Migrations\\CreateMapLocations', 'default', 'App', 1772280373, 2),
 (3, '2026-02-28-000003', 'App\\Database\\Migrations\\CreateCmsPages', 'default', 'App', 1772283041, 3),
 (4, '2026-02-28-000004', 'App\\Database\\Migrations\\CreateSiteSettings', 'default', 'App', 1772283883, 4),
-(5, '2026-02-28-000005', 'App\\Database\\Migrations\\CreateContactSubmissions', 'default', 'App', 1772283883, 4);
+(5, '2026-02-28-000005', 'App\\Database\\Migrations\\CreateContactSubmissions', 'default', 'App', 1772283883, 4),
+(6, '2026-03-01-000006', 'App\\Database\\Migrations\\AddPageLayoutToPages', 'default', 'App', 1772329836, 5),
+(7, '2026-03-01-000007', 'App\\Database\\Migrations\\AddPdfToPages', 'default', 'App', 1772330746, 6);
 
 -- --------------------------------------------------------
 
@@ -478,7 +488,7 @@ ALTER TABLE `map_locations`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `navigation_items`

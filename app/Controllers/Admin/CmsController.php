@@ -86,7 +86,7 @@ class CmsController extends BaseController
             'stats' => [
                 'sliders'     => (new HomeSliderModel())->countAll(),
                 'presidents'  => (new PartyPresidentModel())->countAll(),
-                'inspirations'=> (new InspirationSlideModel())->countAll(),
+                'inspirations' => (new InspirationSlideModel())->countAll(),
                 'gallery'     => (new PressGalleryItemModel())->countAll(),
                 'navigation'  => (new NavigationItemModel())->countAll(),
                 'markers'     => (new MapLocationModel())->countAll(),
@@ -304,28 +304,71 @@ class CmsController extends BaseController
             return $redirect;
         }
         $model = new CmsPageModel();
+        $existing = $id ? $model->find($id) : null;
+
+        // ── Featured Image ──
         $featuredImage = null;
         $uploadedPath  = $this->handleImageUpload('featured_image_file');
         if ($uploadedPath !== null) {
             $featuredImage = $uploadedPath;
         } elseif ($id) {
-            $existing      = $model->find($id);
             $featuredImage = $this->request->getPost('featured_image') ?: ($existing['featured_image'] ?? null);
         } else {
             $featuredImage = $this->request->getPost('featured_image') ?: null;
         }
+
+        // ── PDF Upload ──
+        $pdfFile = null;
+        $pdfUploadedPath = $this->handlePdfUpload('pdf_file_upload');
+        if ($pdfUploadedPath !== null) {
+            // New file uploaded — delete the old physical file if replacing
+            if ($existing && ! empty($existing['pdf_file'])) {
+                $this->deletePhysicalFile($existing['pdf_file']);
+            }
+            $pdfFile = $pdfUploadedPath;
+        } elseif ($this->request->getPost('remove_pdf') === '1') {
+            // Explicitly removed — delete physical file from disk
+            if ($existing && ! empty($existing['pdf_file'])) {
+                $this->deletePhysicalFile($existing['pdf_file']);
+            }
+            $pdfFile = null;
+        } elseif ($id) {
+            $pdfFile = $this->request->getPost('pdf_file') ?: ($existing['pdf_file'] ?? null);
+        } else {
+            $pdfFile = $this->request->getPost('pdf_file') ?: null;
+        }
+
+        $allowedLayouts = ['full-width', 'site-width', 'left-sidebar', 'right-sidebar', 'both-sidebars'];
+        $pageLayout = $this->request->getPost('page_layout');
+        if (! in_array($pageLayout, $allowedLayouts, true)) {
+            $pageLayout = 'site-width';
+        }
+
+        $leftSource  = $this->request->getPost('sidebar_left_source') === 'custom' ? 'custom' : 'default';
+        $rightSource = $this->request->getPost('sidebar_right_source') === 'custom' ? 'custom' : 'default';
+
         $data = [
-            'title'            => (string) $this->request->getPost('title'),
-            'slug'             => (string) $this->request->getPost('slug'),
-            'content'          => (string) $this->request->getPost('content'),
-            'featured_image'   => $featuredImage,
-            'meta_title'       => (string) $this->request->getPost('meta_title'),
-            'meta_keywords'    => (string) $this->request->getPost('meta_keywords'),
-            'meta_description' => (string) $this->request->getPost('meta_description'),
-            'status'           => $this->request->getPost('status') === 'published' ? 'published' : 'draft',
+            'title'                 => (string) $this->request->getPost('title'),
+            'slug'                  => (string) $this->request->getPost('slug'),
+            'content'               => (string) $this->request->getPost('content'),
+            'featured_image'        => $featuredImage,
+            'page_layout'           => $pageLayout,
+            'sidebar_left_source'   => $leftSource,
+            'sidebar_left_content'  => $leftSource === 'custom' ? (string) $this->request->getPost('sidebar_left_content') : null,
+            'sidebar_right_source'  => $rightSource,
+            'sidebar_right_content' => $rightSource === 'custom' ? (string) $this->request->getPost('sidebar_right_content') : null,
+            'pdf_file'              => $pdfFile,
+            'pdf_label'             => (string) $this->request->getPost('pdf_label') ?: 'View / Download PDF',
+            'pdf_display'           => in_array($this->request->getPost('pdf_display'), ['inline', 'download', 'both'], true)
+                ? $this->request->getPost('pdf_display') : 'both',
+            'meta_title'            => (string) $this->request->getPost('meta_title'),
+            'meta_keywords'         => (string) $this->request->getPost('meta_keywords'),
+            'meta_description'      => (string) $this->request->getPost('meta_description'),
+            'status'                => $this->request->getPost('status') === 'published' ? 'published' : 'draft',
         ];
         if ($id) {
-            $model->update($id, $data);
+            // skipValidation avoids CI4's is_unique {id} placeholder bug on updates
+            $model->skipValidation(true)->update($id, $data);
             return redirect()->to('/admin/pages')->with('success', 'Page updated successfully.');
         }
         $model->insert($data);
@@ -337,8 +380,34 @@ class CmsController extends BaseController
         if ($redirect = $this->ensureAuth()) {
             return $redirect;
         }
-        (new CmsPageModel())->delete($id);
+        $model = new CmsPageModel();
+        $page  = $model->find($id);
+        if ($page && ! empty($page['pdf_file'])) {
+            $this->deletePhysicalFile($page['pdf_file']);
+        }
+        $model->delete($id);
         return redirect()->to('/admin/pages')->with('success', 'Page deleted.');
+    }
+
+    public function pagePdfDelete(int $id)
+    {
+        if (! session('isAdmin')) {
+            return $this->response->setJSON(['ok' => false, 'error' => 'Unauthorized'])->setStatusCode(401);
+        }
+        $model = new CmsPageModel();
+        $page  = $model->find($id);
+        if (! $page) {
+            return $this->response->setJSON(['ok' => false, 'error' => 'Page not found'])->setStatusCode(404);
+        }
+        if (! empty($page['pdf_file'])) {
+            $this->deletePhysicalFile($page['pdf_file']);
+        }
+        $model->skipValidation(true)->update($id, [
+            'pdf_file'    => null,
+            'pdf_label'   => 'View / Download PDF',
+            'pdf_display' => 'both',
+        ]);
+        return $this->response->setJSON(['ok' => true]);
     }
 
     private function ensureAuth()
@@ -348,6 +417,14 @@ class CmsController extends BaseController
         }
 
         return null;
+    }
+
+    private function deletePhysicalFile(string $relativePath): void
+    {
+        $absolute = FCPATH . ltrim($relativePath, '/');
+        if (is_file($absolute)) {
+            @unlink($absolute);
+        }
     }
 
     private function handleImageUpload(string $fieldName): ?string
@@ -362,5 +439,33 @@ class CmsController extends BaseController
         $file->move(FCPATH . 'uploads', $newName);
 
         return 'uploads/' . $newName;
+    }
+
+    private function handlePdfUpload(string $fieldName): ?string
+    {
+        $file = $this->request->getFile($fieldName);
+
+        if (! $file || ! $file->isValid() || $file->hasMoved()) {
+            return null;
+        }
+
+        // Validate by MIME type OR client extension (more reliable across browsers)
+        $mime = strtolower((string) $file->getMimeType());
+        $ext  = strtolower((string) $file->getClientExtension());
+        if ($mime !== 'application/pdf' && $ext !== 'pdf') {
+            return null;
+        }
+
+        $dir = FCPATH . 'uploads/pdfs';
+        if (! is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        // getRandomName() already includes the original extension; avoid double extension
+        $hash    = bin2hex(random_bytes(8));
+        $newName = time() . '_' . $hash . '.pdf';
+        $file->move($dir, $newName);
+
+        return 'uploads/pdfs/' . $newName;
     }
 }

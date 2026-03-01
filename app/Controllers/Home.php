@@ -9,6 +9,7 @@ use App\Models\InspirationSlideModel;
 use App\Models\NavigationItemModel;
 use App\Models\PartyPresidentModel;
 use App\Models\PressGalleryItemModel;
+use App\Models\SiteSettingModel;
 
 class Home extends BaseController
 {
@@ -67,9 +68,13 @@ class Home extends BaseController
             ->orderBy('sort_order', 'ASC')
             ->findAll();
 
+        $settings = (new SiteSettingModel())->getAll();
+
         return view('frontend/page', [
-            'page'       => $page,
-            'navigation' => $navigation,
+            'page'                => $page,
+            'navigation'          => $navigation,
+            'defaultSidebarLeft'  => $settings['left_sidebar_html']  ?? '',
+            'defaultSidebarRight' => $settings['right_sidebar_html'] ?? '',
         ]);
     }
 }

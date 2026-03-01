@@ -1,0 +1,374 @@
+/* =============================================
+   CONTACT PAGE STYLES – Janhit Kisan Party
+   ============================================= */
+
+/* ===== TICKER (shared) ===== */
+.ticker {
+  display: none;
+}
+@media (min-width: 0px) {
+  .ticker {
+    display: block;
+  }
+}
+
+/* ===== HERO ===== */
+.contact-hero {
+  position: relative;
+  min-height: 340px;
+  background: url('https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?q=80&w=1920') center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 60px;
+}
+
+.contact-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(13,27,42,0.92) 0%, rgba(27,94,32,0.88) 100%);
+}
+
+.contact-hero-tag {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: #f9a825;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.contact-hero-title {
+  font-size: clamp(42px, 8vw, 80px);
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+
+.contact-hero-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.75);
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.contact-breadcrumb {
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(6px);
+  border-radius: 30px;
+  padding: 6px 20px;
+  font-size: 13px;
+}
+
+.contact-breadcrumb .breadcrumb-item a {
+  color: #f9a825;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.contact-breadcrumb .breadcrumb-item.active {
+  color: rgba(255,255,255,0.7);
+}
+
+.contact-breadcrumb .breadcrumb-item + .breadcrumb-item::before {
+  color: rgba(255,255,255,0.4);
+}
+
+/* ===== INFO CARDS ===== */
+.contact-info-section {
+  padding: 70px 0 40px;
+  background: #f5f7f5;
+}
+
+.contact-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 36px 28px;
+  text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+  border-bottom: 4px solid #1b5e20;
+  transition: transform 0.3s, box-shadow 0.3s;
+  height: 100%;
+}
+
+.contact-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(27,94,32,0.15);
+}
+
+.contact-card-icon {
+  width: 68px;
+  height: 68px;
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 26px;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(27,94,32,0.3);
+}
+
+.contact-card h5 {
+  font-weight: 800;
+  font-size: 16px;
+  color: #1b2340;
+  margin-bottom: 10px;
+}
+
+.contact-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* ===== MAIN SECTION (Form + Side) ===== */
+.contact-main-section {
+  padding: 80px 0;
+  background: #fff;
+}
+
+/* --- Form Wrapper --- */
+.contact-form-wrapper {
+  background: #f9fafb;
+  border-radius: 20px;
+  padding: 48px 44px;
+  border: 1px solid #e8ede8;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 576px) {
+  .contact-form-wrapper {
+    padding: 28px 20px;
+  }
+}
+
+.contact-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  color: #1b5e20;
+  text-transform: uppercase;
+}
+
+.contact-form-title {
+  font-size: clamp(26px, 4vw, 38px);
+  font-weight: 900;
+  color: #1b2340;
+  margin-top: 8px;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.contact-form-sub {
+  color: #666;
+  font-size: 15px;
+}
+
+/* Floating inputs */
+.contact-form .form-control,
+.contact-form .form-select {
+  border: 1.5px solid #d8e4d8;
+  border-radius: 10px;
+  background: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #333;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.contact-form .form-control:focus,
+.contact-form .form-select:focus {
+  border-color: #1b5e20;
+  box-shadow: 0 0 0 3px rgba(27,94,32,0.12);
+  outline: none;
+}
+
+.contact-form .form-floating label {
+  color: #888;
+  font-size: 13px;
+}
+
+.btn-contact-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  color: #fff;
+  border: none;
+  padding: 14px 38px;
+  border-radius: 50px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 6px 20px rgba(27,94,32,0.3);
+  letter-spacing: 0.5px;
+}
+
+.btn-contact-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(27,94,32,0.4);
+}
+
+/* Success message */
+.contact-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 50px 20px;
+  animation: fadeInUp 0.5s ease;
+}
+
+.contact-success i {
+  font-size: 60px;
+  color: #2e7d32;
+  margin-bottom: 16px;
+}
+
+.contact-success h5 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #1b2340;
+}
+
+.contact-success p {
+  color: #666;
+  font-size: 15px;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Side Panel --- */
+.contact-side-panel {
+  background: linear-gradient(160deg, #0d1b2a 0%, #1b2340 100%);
+  border-radius: 20px;
+  padding: 44px 36px;
+  color: #fff;
+  height: 100%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+}
+
+@media (max-width: 576px) {
+  .contact-side-panel {
+    padding: 28px 20px;
+  }
+}
+
+.contact-side-panel h3 {
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+}
+
+/* Social Links */
+.social-contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.social-contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: transform 0.2s, opacity 0.2s;
+  color: #fff;
+}
+
+.social-contact-btn:hover {
+  transform: translateX(6px);
+  opacity: 0.9;
+  color: #fff;
+}
+
+.social-contact-btn > i {
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.social-contact-btn div span {
+  display: block;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.social-contact-btn div small {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.social-contact-btn.facebook  { background: rgba(59,89,152,0.25); }
+.social-contact-btn.facebook i { background: #3b5998; }
+
+.social-contact-btn.twitter   { background: rgba(29,161,242,0.18); }
+.social-contact-btn.twitter i { background: #111; }
+
+.social-contact-btn.youtube   { background: rgba(255,0,0,0.18); }
+.social-contact-btn.youtube i { background: #ff0000; }
+
+.social-contact-btn.whatsapp  { background: rgba(37,211,102,0.18); }
+.social-contact-btn.whatsapp i { background: #25d366; }
+
+.social-contact-btn.instagram { background: rgba(225,48,108,0.18); }
+.social-contact-btn.instagram i { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888); }
+
+/* Quick Actions */
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  transition: background 0.25s, transform 0.2s;
+}
+
+.quick-action-btn:hover {
+  background: rgba(27,94,32,0.4);
+  transform: translateX(4px);
+  color: #fff;
+}
+
+.quick-action-btn i {
+  font-size: 16px;
+  color: #f9a825;
+}
+
+/* ===== MAP SECTION ===== */
+.contact-map-section {
+  position: relative;
+  border-top: 4px solid #1b5e20;
+}
+
+.contact-map-section iframe {
+  display: block;
+  filter: grayscale(20%);
+}
+
+/* ===== FOOTER OVERRIDE (ticker hidden on contact page) ===== */
+.ticker { display: block; }
